@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -38,12 +40,21 @@ public class MainActivity extends AppCompatActivity {
     private StorageTask mUploadTask;
     private ProgressBar mUpdateProfileDataProgressBar;
     ImageView mProfilePicturePreviewImageView;
+    Button mUploadImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mProfilePicturePreviewImageView = findViewById(R.id.imagev);
+        mUploadImageButton = findViewById(R.id.form_upload_image_button);
+
+        mUploadImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImageChooser();
+            }
+        });
     }
 
     private void openImageChooser() {
@@ -125,6 +136,5 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
-
     }
 }
