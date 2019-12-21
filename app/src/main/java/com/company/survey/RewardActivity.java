@@ -18,7 +18,7 @@ public class RewardActivity extends AppCompatActivity
     TextView text;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference reference = database.getReference("rewards");
+    DatabaseReference reference = database.getReference("Reward");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,9 +30,7 @@ public class RewardActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds:dataSnapshot.getChildren()) {
-                    if(ds.getKey().equals("rishabh")) {
-                        text.setText(ds.getValue().toString());
-                    }
+                        text.setText("Your Reward : "+ds.getValue().toString());
                 }
             }
 
@@ -41,6 +39,5 @@ public class RewardActivity extends AppCompatActivity
 
             }
         });
-
     }
 }

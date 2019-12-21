@@ -12,13 +12,12 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,6 +26,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
@@ -43,15 +44,22 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
 
     Double latitude,longitude,altitude;
 
-    private StorageReference profilePictureFolderStorageReference;
-    private DatabaseReference userDataFolderReference;
+    private StorageReference profilePictureFolderStorageReference = FirebaseStorage.getInstance().getReference();
+
+    private DatabaseReference userDataFolderReference = FirebaseDatabase.getInstance().getReference("Issues");
+    private DatabaseReference userDataFolderReference2 = FirebaseDatabase.getInstance().getReference("Reward");
 
     FusedLocationProviderClient client;
 
     private StorageTask mUploadTask;
-    private ProgressBar mUpdateProfileDataProgressBar;
     ImageView mProfilePicturePreviewImageView;
     Button mUploadImageButton;
+    EditText mEmailEditText;
+    Button mGetLocationButton;
+    String finalURL;
+    Button mValidateDataButton;
+    Button mSubmitButton;
+    TextView mLatitudeTV,mLongitudeTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +67,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
         setContentView(R.layout.activity_main);
         mProfilePicturePreviewImageView = findViewById(R.id.imagev);
         mUploadImageButton = findViewById(R.id.form_upload_image_button);
+        mValidateDataButton = findViewById(R.id.validate_data);
+        mEmailEditText = findViewById(R.id.email);
+        mGetLocationButton = findViewById(R.id.get_location);
+        mSubmitButton = findViewById(R.id.submit);
+        mLatitudeTV = findViewById(R.id.latitude);
+        mLongitudeTV = findViewById(R.id.longitude);
         client= LocationServices.getFusedLocationProviderClient(this );
         presenter = new MainPresenter(this);
 
@@ -69,7 +83,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
             }
         });
 
-        mUploadImageButton.setOnClickListener(new View.OnClickListener() {
+        mValidateDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "It is a valid photo.. Kuudor", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mGetLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 checkPermissionForLocation();
@@ -85,9 +106,19 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
                              * Converts recieved cordinates into latitude and longitude*/
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+
+                            mLatitudeTV.setText(latitude+"");
+                            mLongitudeTV.setText(longitude+"");
                         }
                     }
                 });
+            }
+        });
+
+        mSubmitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadData();
             }
         });
     }
@@ -119,29 +150,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
 
     private void uploadData() {
         if (mNewProfileImageUri != null) {
-            final StorageReference ref = profilePictureFolderStorageReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "." + getFileExtension(mNewProfileImageUri));
+            final StorageReference ref = profilePictureFolderStorageReference.child(FirebaseAuth.getInstance()+ "." + getFileExtension(mNewProfileImageUri));
 
             mUploadTask = ref.putFile(mNewProfileImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            Handler handler = new Handler();
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
 
-                                    mUpdateProfileDataProgressBar.setProgress(0);
-                                }
-                            }, 500);
+                            Toast.makeText(MainActivity.this, "Uploaded the photo", Toast.LENGTH_SHORT).show();
 
-                            Toast.makeText(MainActivity.this, "Updated", Toast.LENGTH_SHORT).show();
-                            Log.d("UpdateProfile", "Picture uploaded to Firebase Storage");
-
-                            String profilePictureUrlAtCloud;
                             ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     String profilePictureUrlAtCloud = uri.toString();
+                                    finalURL = profilePictureUrlAtCloud;
+
+                                    FormModel model = new FormModel("rishabh",profilePictureUrlAtCloud, String.valueOf(latitude), String.valueOf(longitude), "Yes");
+
+                                    userDataFolderReference.setValue(model);
+                                    userDataFolderReference2.child("rishabh").setValue("1000");
 
                                     //String firstName = mFirstNameEditText.getText().toString().trim();
                                     //String lastName = mLastNameEditText.getText().toString().trim();
@@ -164,8 +191,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                            mUpdateProfileDataProgressBar.setProgress((int) progress);
                         }
                     });
         } else {
