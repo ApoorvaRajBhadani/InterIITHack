@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -83,36 +84,34 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
             }
         });
 
-        mValidateDataButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "It is a valid photo.. Kuudor", Toast.LENGTH_SHORT).show();
-            }
+        mValidateDataButton.setOnClickListener(v -> {
+            Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> {
+                //Intent intent = new Intent(SplashActivity.this, HomePageActivity.class);
+                Toast.makeText(MainActivity.this, "It is a valid photo.. Kuudos", Toast.LENGTH_SHORT).show();
+            },3000);
         });
 
-        mGetLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPermissionForLocation();
-                if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
-                {return;}
+        mGetLocationButton.setOnClickListener(v -> {
+            checkPermissionForLocation();
+            if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+            {return;}
 
-                client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            /**
-                             * Converts recieved cordinates into latitude and longitude*/
-                            latitude = location.getLatitude();
-                            longitude = location.getLongitude();
+            client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if (location != null) {
+                        /**
+                         * Converts recieved cordinates into latitude and longitude*/
+                        latitude = location.getLatitude();
+                        longitude = location.getLongitude();
 
-                            mLatitudeTV.setText(latitude+"");
-                            mLongitudeTV.setText(longitude+"");
-                        }
+                        mLatitudeTV.setText(latitude+"");
+                        mLongitudeTV.setText(longitude+"");
                     }
-                });
-            }
+                }
+            });
         });
 
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
@@ -170,16 +169,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.view
                                     userDataFolderReference.setValue(model);
                                     userDataFolderReference2.child("rishabh").setValue("1000");
 
-                                    //String firstName = mFirstNameEditText.getText().toString().trim();
-                                    //String lastName = mLastNameEditText.getText().toString().trim();
-
-//                                    userDataFolderReference.child("firstName").setValue(firstName);
-//                                    userDataFolderReference.child("lastName").setValue(lastName);
-//                                    userDataFolderReference.child("profilePictureLink").setValue(profilePictureUrlAtCloud);
-//                                    userDataFolderReference.child("profileStatus").setValue(3);
                                 }
                             });
-                            finish();
+                            onBackPressed();
 
                         }
                     }).addOnFailureListener(new OnFailureListener() {
