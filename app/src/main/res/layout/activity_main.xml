@@ -12,12 +12,17 @@
         android:layout_height="wrap_content"
         android:hint="Email" />
 
-    <EditText
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Location"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="latitude" />
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="longitude" />
@@ -34,6 +39,16 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:src="@mipmap/ic_launcher" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="validate data"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="submit"/>
 
 
 </LinearLayout>

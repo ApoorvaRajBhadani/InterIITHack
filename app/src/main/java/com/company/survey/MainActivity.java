@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Uri mNewProfileImageUri;
 
+    Double latitude,longitude,altitude;
+
     private StorageReference profilePictureFolderStorageReference;
     private DatabaseReference userDataFolderReference;
 
@@ -138,5 +140,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void checkPermissionForLocation() {
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,new String[]
+                    {Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},MY_PERMISSION_REQUEST_CODE);
+        }
+
     }
 }
