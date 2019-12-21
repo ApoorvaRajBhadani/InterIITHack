@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ import com.squareup.picasso.Picasso;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int MY_PERMISSION_REQUEST_CODE = 1000;
 
     private Uri mNewProfileImageUri;
 
@@ -55,11 +57,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mProfilePicturePreviewImageView = findViewById(R.id.imagev);
         mUploadImageButton = findViewById(R.id.form_upload_image_button);
+        client= LocationServices.getFusedLocationProviderClient(this );
 
         mUploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openImageChooser();
+            }
+        });
+
+        mUploadImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkPermissionForLocation();
+                if(ActivityCompat.checkSelfPermission(AfterLogIn.this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(AfterLogIn.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+                {return;}
+
+                client.getLastLocation().addOnSuccessListener(AfterLogIn.this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location)
+                    {
+                        if(location!=null)
+                        {
+                            /**
+                             * Converts recieved cordinates into latitude and longitude*/
+                            latitude=location.getLatitude();
+                            longitude=location.getLongitude();
+                            altitude=location.getAltitude();
             }
         });
     }
@@ -147,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkPermissionForLocation() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,new String[]
                     {Manifest.permission.ACCESS_COARSE_LOCATION,
