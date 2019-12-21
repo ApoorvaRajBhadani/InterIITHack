@@ -33,8 +33,9 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity implements MainContract.view
+{
+    MainContract.presenter presenter;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int MY_PERMISSION_REQUEST_CODE = 1000;
 
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         mProfilePicturePreviewImageView = findViewById(R.id.imagev);
         mUploadImageButton = findViewById(R.id.form_upload_image_button);
         client= LocationServices.getFusedLocationProviderClient(this );
+        presenter = new MainPresenter(this);
 
         mUploadImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
