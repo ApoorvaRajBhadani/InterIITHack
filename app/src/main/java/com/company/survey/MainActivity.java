@@ -9,6 +9,7 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,21 +71,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkPermissionForLocation();
-                if(ActivityCompat.checkSelfPermission(AfterLogIn.this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(AfterLogIn.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+                if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
                 {return;}
 
-                client.getLastLocation().addOnSuccessListener(AfterLogIn.this, new OnSuccessListener<Location>() {
+                client.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<Location>() {
                     @Override
-                    public void onSuccess(Location location)
-                    {
-                        if(location!=null)
-                        {
+                    public void onSuccess(Location location) {
+                        if (location != null) {
                             /**
                              * Converts recieved cordinates into latitude and longitude*/
-                            latitude=location.getLatitude();
-                            longitude=location.getLongitude();
-                            altitude=location.getAltitude();
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                        }
+                    }
+                });
             }
         });
     }
@@ -169,10 +170,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
     }
-
     private void checkPermissionForLocation() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)!= PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED)
+                && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
         {
             ActivityCompat.requestPermissions(this,new String[]
                     {Manifest.permission.ACCESS_COARSE_LOCATION,
