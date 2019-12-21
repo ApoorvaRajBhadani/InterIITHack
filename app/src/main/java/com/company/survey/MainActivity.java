@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private StorageReference profilePictureFolderStorageReference;
     private DatabaseReference userDataFolderReference;
 
+    FusedLocationProviderClient client;
 
     private StorageTask mUploadTask;
     private ProgressBar mUpdateProfileDataProgressBar;
