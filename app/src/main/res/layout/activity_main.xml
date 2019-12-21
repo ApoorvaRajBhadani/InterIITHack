@@ -10,23 +10,30 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"/>
+        android:hint="Email" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Residential Address"
-        />
+        android:hint="latitude" />
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:hint="Description of issue" />
+        android:layout_height="wrap_content"
+        android:hint="longitude" />
 
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:id="@+id/imagev"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Upload image"
+        android:id="@+id/form_upload_image_button"/>
+
+    <ImageView
+        android:id="@+id/imagev"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:src="@mipmap/ic_launcher" />
 
 
 </LinearLayout>
