@@ -17,8 +17,10 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,6 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mUpdateProfileDataProgressBar;
     ImageView mProfilePicturePreviewImageView;
     Button mUploadImageButton;
+    EditText mEmailEditText;
+    Button mGetLocationButton;
+    Button mValidateDataButton;
+    Button mSubmitButton;
+    TextView mLatitudeTV,mLongitudeTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mProfilePicturePreviewImageView = findViewById(R.id.imagev);
         mUploadImageButton = findViewById(R.id.form_upload_image_button);
+        mValidateDataButton = findViewById(R.id.validate_data);
+        mEmailEditText = findViewById(R.id.email);
+        mGetLocationButton = findViewById(R.id.get_location);
+        mSubmitButton = findViewById(R.id.submit);
+        mLatitudeTV = findViewById(R.id.latitude);
+        mLongitudeTV = findViewById(R.id.longitude);
         client= LocationServices.getFusedLocationProviderClient(this );
 
         mUploadImageButton.setOnClickListener(new View.OnClickListener() {
